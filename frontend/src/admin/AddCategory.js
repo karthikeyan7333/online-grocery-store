@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState } from 'react';
 import {
     LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Plus, Search, Bell, Upload, Loader, Folder, Store
@@ -36,7 +37,7 @@ const AddCategory = () => {
         // Removed shopid as it is now Admin only
 
         try {
-            const response = await fetch('http://localhost:5510/grocery/addcategory', {
+            const response = await fetch(`${API_BASE_URL}/grocery/addcategory`, {
                 method: 'POST',
                 body: formData
             });

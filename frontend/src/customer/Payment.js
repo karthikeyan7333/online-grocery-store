@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, AlertCircle, CreditCard } from 'lucide-react';
@@ -24,10 +25,10 @@ const Payment = () => {
 
         try {
             // 1. Get Key ID (Optional, or just use hardcoded if env not exposed, but secure way is endpoint)
-            const { data: { key } } = await axios.get("http://localhost:5510/api/payment/get-key");
+            const { data: { key } } = await axios.get(`${API_BASE_URL}/api/payment/get-key`);
 
             // 2. Create Order
-            const { data: { data: order } } = await axios.post("http://localhost:5510/api/payment/orders", {
+            const { data: { data: order } } = await axios.post(`${API_BASE_URL}/api/payment/orders`, {
                 amount: orderData.totalAmount
             });
 
@@ -47,7 +48,7 @@ const Payment = () => {
                 handler: async (response) => {
                     try {
                         // 4. Verify Payment
-                        const verifyUrl = "http://localhost:5510/api/payment/verify";
+                        const verifyUrl = `${API_BASE_URL}/api/payment/verify`;
                         const { data: verifyData } = await axios.post(verifyUrl, response);
 
                         if (verifyData.message === "Payment verified successfully") {
@@ -89,7 +90,7 @@ const Payment = () => {
 
     const placeOrderOnBackend = async (paymentDetails) => {
         try {
-            const res = await axios.post('http://localhost:5510/grocery/order/place', {
+            const res = await axios.post(`${API_BASE_URL}/grocery/order/place`, {
                 userid: orderData.userid,
                 totalAmount: orderData.totalAmount,
                 items: orderData.items,

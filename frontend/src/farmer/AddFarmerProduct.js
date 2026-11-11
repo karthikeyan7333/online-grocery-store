@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import {
     Plus, Upload, Loader, Sprout, ArrowLeft, Package, Star, LayoutDashboard, LogOut, Settings
@@ -29,13 +30,13 @@ const AddFarmerProduct = () => {
         const fetchData = async () => {
             if (user) {
                 try {
-                    const catRes = await fetch(`http://localhost:5510/grocery/categories/getall`);
+                    const catRes = await fetch(`${API_BASE_URL}/grocery/categories/getall`);
                     const catData = await catRes.json();
                     if (catData.success) {
                         setCategories(catData.categories);
                     }
 
-                    const subRes = await fetch(`http://localhost:5510/grocery/subcategories/getall`);
+                    const subRes = await fetch(`${API_BASE_URL}/grocery/subcategories/getall`);
                     const subData = await subRes.json();
                     if (subData.success) {
                         setSubCategories(subData.subcategories);
@@ -99,7 +100,7 @@ const AddFarmerProduct = () => {
         formData.append('farmerid', user?.profile?._id);
 
         try {
-            const response = await fetch('http://localhost:5510/grocery/farmer/addproduct', {
+            const response = await fetch(`${API_BASE_URL}/grocery/farmer/addproduct`, {
                 method: 'POST',
                 body: formData
             });

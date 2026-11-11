@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -49,7 +50,7 @@ const FarmerDashboard = () => {
 
     const saveSettings = async () => {
         try {
-            const response = await fetch('http://localhost:5510/grocery/farmer/updateprofile', {
+            const response = await fetch(`${API_BASE_URL}/grocery/farmer/updateprofile`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -76,7 +77,7 @@ const FarmerDashboard = () => {
             if (user?.profile?._id) {
                 setLoading(true);
                 try {
-                    const prodRes = await fetch(`http://localhost:5510/grocery/farmer/products/${user.profile._id}`);
+                    const prodRes = await fetch(`${API_BASE_URL}/grocery/farmer/products/${user.profile._id}`);
                     const prodData = await prodRes.json();
                     if (prodData.success) {
                         setProducts(prodData.products);
@@ -280,7 +281,7 @@ const FarmerDashboard = () => {
                                         <div key={product._id} className="bg-white rounded-[2.5rem] p-6 border border-gray-50 shadow-sm hover:shadow-2xl transition-all group relative">
                                             <div className="aspect-square bg-gray-50 rounded-[2rem] mb-6 overflow-hidden flex items-center justify-center relative">
                                                 <img
-                                                    src={`http://localhost:5510/product/${product.productimage}`}
+                                                    src={`${API_BASE_URL}/product/${product.productimage}`}
                                                     alt={product.productname}
                                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />
@@ -309,7 +310,7 @@ const FarmerDashboard = () => {
                                                             const newStatus = product.stockStatus === 'Available' ? 'Out of Stock' : 'Available';
                                                             const updateStatus = async () => {
                                                                 try {
-                                                                    const res = await fetch(`http://localhost:5510/grocery/updateproductstatus/${product._id}`, {
+                                                                    const res = await fetch(`${API_BASE_URL}/grocery/updateproductstatus/${product._id}`, {
                                                                         method: 'PUT',
                                                                         headers: { 'Content-Type': 'application/json' },
                                                                         body: JSON.stringify({ stockStatus: newStatus })

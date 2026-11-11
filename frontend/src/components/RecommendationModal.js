@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Star, ChevronRight } from 'lucide-react';
@@ -15,7 +16,7 @@ const RecommendationModal = ({ isOpen, onClose, productName, addedProduct, handl
     const fetchRecommendations = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:5510/grocery/recommend/${encodeURIComponent(productName)}`);
+            const res = await fetch(`${API_BASE_URL}/grocery/recommend/${encodeURIComponent(productName)}`);
             const data = await res.json();
             if (data.success) {
                 // Filter out the product that was just added
@@ -83,7 +84,7 @@ const RecommendationModal = ({ isOpen, onClose, productName, addedProduct, handl
                                         >
                                             <div className="w-20 h-20 bg-white rounded-2xl overflow-hidden flex-shrink-0 shadow-sm">
                                                 <img
-                                                    src={`http://localhost:5510/product/${product.productimage}`}
+                                                    src={`${API_BASE_URL}/product/${product.productimage}`}
                                                     alt={product.productname}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                 />

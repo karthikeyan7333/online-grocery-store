@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
@@ -36,7 +37,7 @@ const ChatBot = () => {
             const config = {
                 headers: token ? { Authorization: `Bearer ${token}` } : {}
             };
-            const response = await axios.post('http://localhost:5510/grocery/chat', { message: userMsg.content }, config);
+            const response = await axios.post(`${API_BASE_URL}/grocery/chat`, { message: userMsg.content }, config);
             if (response.data.success) {
                 setMessages(prev => [...prev, { role: 'system', content: response.data.reply }]);
             }

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import {
     LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Plus, Search, Bell, Upload, Loader, Folder, Store
@@ -19,7 +20,7 @@ const EditCategory = () => {
         categoryimage: null
     });
 
-    const [preview, setPreview] = useState(categoryToEdit?.categoryimage ? `http://localhost:5510/category/${categoryToEdit.categoryimage}` : null);
+    const [preview, setPreview] = useState(categoryToEdit?.categoryimage ? `${API_BASE_URL}/category/${categoryToEdit.categoryimage}` : null);
 
     useEffect(() => {
         if (!categoryToEdit) {
@@ -50,7 +51,7 @@ const EditCategory = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5510/grocery/category/edit/${categoryToEdit._id}`, {
+            const response = await fetch(`${API_BASE_URL}/grocery/category/edit/${categoryToEdit._id}`, {
                 method: 'PUT',
                 body: formData
             });

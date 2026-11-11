@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -68,47 +69,47 @@ const AdminDashboard = () => {
         setLoading(true);
         try {
             // Fetch Categories
-            const catRes = await fetch(`http://localhost:5510/grocery/categories/getall`);
+            const catRes = await fetch(`${API_BASE_URL}/grocery/categories/getall`);
             const catData = await catRes.json();
             if (catData.success) setCategories(catData.categories);
 
             // Fetch SubCategories
-            const subRes = await fetch(`http://localhost:5510/grocery/subcategories/getall`);
+            const subRes = await fetch(`${API_BASE_URL}/grocery/subcategories/getall`);
             const subData = await subRes.json();
             if (subData.success) setSubCategories(subData.subcategories);
 
             // Fetch Shops
-            const shopRes = await fetch(`http://localhost:5510/grocery/shops/getall`);
+            const shopRes = await fetch(`${API_BASE_URL}/grocery/shops/getall`);
             const shopData = await shopRes.json();
             if (shopData.success) setShops(shopData.shops);
 
             // Fetch Products
-            const prodRes = await fetch(`http://localhost:5510/grocery/products/getall`);
+            const prodRes = await fetch(`${API_BASE_URL}/grocery/products/getall`);
             const prodData = await prodRes.json();
             if (prodData.success) setProducts(prodData.products);
 
             // Fetch Offers
-            const offerRes = await fetch(`http://localhost:5510/grocery/offer/getall`);
+            const offerRes = await fetch(`${API_BASE_URL}/grocery/offer/getall`);
             const offerData = await offerRes.json();
             if (offerData.success) setOffers(offerData.offers);
 
             // Fetch Delivery Boys
-            const deliveryRes = await fetch(`http://localhost:5510/grocery/admin/getdeliveryboys`);
+            const deliveryRes = await fetch(`${API_BASE_URL}/grocery/admin/getdeliveryboys`);
             const deliveryData = await deliveryRes.json();
             if (deliveryRes.ok && deliveryData.success) setDeliveryBoys(deliveryData.deliveryBoys);
 
             // Fetch Farmers
-            const farmerRes = await fetch(`http://localhost:5510/grocery/admin/getfarmers`);
+            const farmerRes = await fetch(`${API_BASE_URL}/grocery/admin/getfarmers`);
             const farmerData = await farmerRes.json();
             if (farmerRes.ok && farmerData.success) setFarmers(farmerData.farmers);
 
             // Fetch All Orders
-            const orderRes = await fetch(`http://localhost:5510/grocery/admin/orders/getall`);
+            const orderRes = await fetch(`${API_BASE_URL}/grocery/admin/orders/getall`);
             const orderData = await orderRes.json();
             if (orderData.success) setOrders(orderData.orders);
 
             // Fetch Leave Requests
-            const leaveRes = await fetch(`http://localhost:5510/grocery/admin/leaves`);
+            const leaveRes = await fetch(`${API_BASE_URL}/grocery/admin/leaves`);
             const leaveData = await leaveRes.json();
             if (leaveData.success) setLeaveRequests(leaveData.leaves);
 
@@ -126,7 +127,7 @@ const AdminDashboard = () => {
 
     const fetchNotifications = async () => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/notifications/get?role=admin`);
+            const res = await fetch(`${API_BASE_URL}/grocery/notifications/get?role=admin`);
             const data = await res.json();
             if (data.success) {
                 setNotifications(data.notifications);
@@ -139,7 +140,7 @@ const AdminDashboard = () => {
 
     const handleMarkAsRead = async () => {
         try {
-            await fetch('http://localhost:5510/grocery/notifications/read', {
+            await fetch(`${API_BASE_URL}/grocery/notifications/read`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: 'all', role: 'admin' })
@@ -158,7 +159,7 @@ const AdminDashboard = () => {
 
     const handleUpdateShopStatus = async (shopid, status) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/admin/updateshopstatus`, {
+            const res = await fetch(`${API_BASE_URL}/grocery/admin/updateshopstatus`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ shopid, status })
@@ -176,7 +177,7 @@ const AdminDashboard = () => {
 
     const handleUpdateDeliveryStatus = async (deliveryid, status) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/admin/updatedeliverystatus`, {
+            const res = await fetch(`${API_BASE_URL}/grocery/admin/updatedeliverystatus`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ deliveryid, status })
@@ -194,7 +195,7 @@ const AdminDashboard = () => {
 
     const handleUpdateFarmerStatus = async (farmerid, status) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/admin/updatefarmerstatus`, {
+            const res = await fetch(`${API_BASE_URL}/grocery/admin/updatefarmerstatus`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ farmerid, status })
@@ -212,7 +213,7 @@ const AdminDashboard = () => {
 
     const handleAssignDelivery = async (deliveryBoyId) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/admin/assigndelivery`, {
+            const res = await fetch(`${API_BASE_URL}/grocery/admin/assigndelivery`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ orderId: selectedOrder._id, deliveryBoyId })
@@ -241,7 +242,7 @@ const AdminDashboard = () => {
     const handleUpdateLeaveStatus = async (leaveId, status) => {
         if (!window.confirm(`Are you sure you want to ${status} this request?`)) return;
         try {
-            const res = await fetch('http://localhost:5510/grocery/admin/leave/update', {
+            const res = await fetch(`${API_BASE_URL}/grocery/admin/leave/update`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ leaveId, status })
@@ -444,7 +445,7 @@ const AdminDashboard = () => {
                                     <div key={cat._id} className="group border border-gray-100 rounded-[2rem] p-4 hover:shadow-xl transition-all relative">
                                         <div className="aspect-video bg-gray-50 rounded-[1.5rem] mb-4 overflow-hidden flex items-center justify-center relative">
                                             <img
-                                                src={`http://localhost:5510/category/${cat.categoryimage}`}
+                                                src={`${API_BASE_URL}/category/${cat.categoryimage}`}
                                                 alt={cat.categoryname}
                                                 className="w-full h-full object-cover"
                                             />
@@ -468,7 +469,7 @@ const AdminDashboard = () => {
                                                             e.stopPropagation();
                                                             if (window.confirm("Are you sure you want to delete this category?")) {
                                                                 try {
-                                                                    const res = await fetch(`http://localhost:5510/grocery/category/delete/${cat._id}`, { method: 'DELETE' });
+                                                                    const res = await fetch(`${API_BASE_URL}/grocery/category/delete/${cat._id}`, { method: 'DELETE' });
                                                                     const data = await res.json();
                                                                     if (data.success) {
                                                                         setCategories(categories.filter(c => c._id !== cat._id));
@@ -523,7 +524,7 @@ const AdminDashboard = () => {
                                         <div className="aspect-video bg-gray-50 rounded-[1.5rem] mb-4 overflow-hidden flex items-center justify-center relative">
                                             {sub.subcategoryimage ? (
                                                 <img
-                                                    src={`http://localhost:5510/subcategory/${sub.subcategoryimage}`}
+                                                    src={`${API_BASE_URL}/subcategory/${sub.subcategoryimage}`}
                                                     alt={sub.subcategoryname}
                                                     className="w-full h-full object-cover"
                                                 />
@@ -550,7 +551,7 @@ const AdminDashboard = () => {
                                                             e.stopPropagation();
                                                             if (window.confirm("Are you sure you want to delete this subcategory?")) {
                                                                 try {
-                                                                    const res = await fetch(`http://localhost:5510/grocery/subcategory/delete/${sub._id}`, { method: 'DELETE' });
+                                                                    const res = await fetch(`${API_BASE_URL}/grocery/subcategory/delete/${sub._id}`, { method: 'DELETE' });
                                                                     const data = await res.json();
                                                                     if (data.success) {
                                                                         setSubCategories(subcategories.filter(s => s._id !== sub._id));
@@ -817,7 +818,7 @@ const AdminDashboard = () => {
                                     <div key={product._id} className="group border border-gray-100 rounded-[2rem] p-4 hover:shadow-xl transition-all relative">
                                         <div className="aspect-square bg-gray-50 rounded-[1.5rem] mb-4 overflow-hidden relative">
                                             <img
-                                                src={`http://localhost:5510/product/${product.productimage}`}
+                                                src={`${API_BASE_URL}/product/${product.productimage}`}
                                                 alt={product.productname}
                                                 className="w-full h-full object-cover"
                                             />
@@ -866,7 +867,7 @@ const AdminDashboard = () => {
                                     <div key={offer._id} className="group border border-gray-100 rounded-[2rem] overflow-hidden hover:shadow-xl transition-all relative">
                                         <div className="aspect-video bg-gray-50 relative">
                                             <img
-                                                src={`http://localhost:5510/offer/${offer.offerImage}`}
+                                                src={`${API_BASE_URL}/offer/${offer.offerImage}`}
                                                 alt={offer.title}
                                                 className="w-full h-full object-cover"
                                             />
@@ -885,7 +886,7 @@ const AdminDashboard = () => {
                                                     onClick={async () => {
                                                         if (window.confirm("Delete this offer?")) {
                                                             try {
-                                                                await fetch(`http://localhost:5510/grocery/offer/delete/${offer._id}`, { method: 'DELETE' });
+                                                                await fetch(`${API_BASE_URL}/grocery/offer/delete/${offer._id}`, { method: 'DELETE' });
                                                                 setOffers(offers.filter(o => o._id !== offer._id));
                                                             } catch (err) {
                                                                 console.error(err);

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Save, Upload, Tag, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -21,15 +22,15 @@ const AddOffer = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const prodRes = await fetch('http://localhost:5510/grocery/products/getall');
+                const prodRes = await fetch(`${API_BASE_URL}/grocery/products/getall`);
                 const prodData = await prodRes.json();
                 if (prodData.success) setProducts(prodData.products);
 
-                const catRes = await fetch('http://localhost:5510/grocery/categories/getall');
+                const catRes = await fetch(`${API_BASE_URL}/grocery/categories/getall`);
                 const catData = await catRes.json();
                 if (catData.success) setCategories(catData.categories);
 
-                const subRes = await fetch('http://localhost:5510/grocery/subcategories/getall');
+                const subRes = await fetch(`${API_BASE_URL}/grocery/subcategories/getall`);
                 const subData = await subRes.json();
                 if (subData.success) setSubCategories(subData.subcategories);
             } catch (error) {
@@ -69,7 +70,7 @@ const AddOffer = () => {
         if (selectedSubcategory) formData.append('subcategoryid', selectedSubcategory);
 
         try {
-            const res = await fetch('http://localhost:5510/grocery/offer/add', {
+            const res = await fetch(`${API_BASE_URL}/grocery/offer/add`, {
                 method: 'POST',
                 body: formData
             });

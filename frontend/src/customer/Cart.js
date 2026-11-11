@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Trash2, ShoppingBag, ArrowLeft, CheckCircle } from 'lucide-react';
@@ -25,7 +26,7 @@ const Cart = () => {
 
     const fetchCart = async (userId) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/cart/get/${userId}`);
+            const res = await fetch(`${API_BASE_URL}/grocery/cart/get/${userId}`);
             const data = await res.json();
             if (data.success && data.cart) {
                 setCartItems(data.cart.products);
@@ -39,7 +40,7 @@ const Cart = () => {
 
     const fetchOffers = async () => {
         try {
-            const res = await fetch('http://localhost:5510/grocery/homepage/offers');
+            const res = await fetch(`${API_BASE_URL}/grocery/homepage/offers`);
             if (res.ok) {
                 const data = await res.json();
                 if (data.success) {
@@ -79,7 +80,7 @@ const Cart = () => {
 
     const removeFromCart = async (productId) => {
         try {
-            const res = await fetch('http://localhost:5510/grocery/cart/remove', {
+            const res = await fetch(`${API_BASE_URL}/grocery/cart/remove`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userid: user.id || user._id, productid: productId })
@@ -95,7 +96,7 @@ const Cart = () => {
 
     const updateQuantity = async (productId, newQuantity) => {
         try {
-            const res = await fetch('http://localhost:5510/grocery/cart/updatequantity', {
+            const res = await fetch(`${API_BASE_URL}/grocery/cart/updatequantity`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userid: user.id || user._id, productid: productId, quantity: newQuantity })
@@ -222,7 +223,7 @@ const Cart = () => {
                                 >
                                     <div className="w-24 h-24 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0">
                                         <img
-                                            src={`http://localhost:5510/product/${item.productid?.productimage}`}
+                                            src={`${API_BASE_URL}/product/${item.productid?.productimage}`}
                                             alt={item.productid?.productname}
                                             className="w-full h-full object-cover"
                                         />

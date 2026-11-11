@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import {
     LayoutDashboard, Plus, Search, Bell, Upload, Loader, Folder, LogOut
@@ -19,7 +20,7 @@ const EditSubCategory = () => {
         subcategoryimage: null
     });
 
-    const [preview, setPreview] = useState(subcategoryToEdit?.subcategoryimage ? `http://localhost:5510/subcategory/${subcategoryToEdit.subcategoryimage}` : null);
+    const [preview, setPreview] = useState(subcategoryToEdit?.subcategoryimage ? `${API_BASE_URL}/subcategory/${subcategoryToEdit.subcategoryimage}` : null);
 
     useEffect(() => {
         if (!subcategoryToEdit) {
@@ -30,7 +31,7 @@ const EditSubCategory = () => {
 
         const fetchCategories = async () => {
             try {
-                const res = await fetch('http://localhost:5510/grocery/categories/getall');
+                const res = await fetch(`${API_BASE_URL}/grocery/categories/getall`);
                 const catData = await res.json();
                 if (catData.success) {
                     setCategories(catData.categories);
@@ -65,7 +66,7 @@ const EditSubCategory = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5510/grocery/subcategory/edit/${subcategoryToEdit._id}`, {
+            const response = await fetch(`${API_BASE_URL}/grocery/subcategory/edit/${subcategoryToEdit._id}`, {
                 method: 'PUT',
                 body: formData
             });

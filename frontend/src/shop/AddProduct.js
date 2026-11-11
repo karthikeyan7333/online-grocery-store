@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Plus, Search, Bell, Upload, Loader, Folder
@@ -32,14 +33,14 @@ const AddProduct = () => {
       if (user) {
         try {
           // Fetch Categories
-          const catRes = await fetch(`http://localhost:5510/grocery/categories/getall`);
+          const catRes = await fetch(`${API_BASE_URL}/grocery/categories/getall`);
           const catData = await catRes.json();
           if (catData.success) {
             setCategories(catData.categories);
           }
 
           // Fetch SubCategories
-          const subRes = await fetch(`http://localhost:5510/grocery/subcategories/getall`);
+          const subRes = await fetch(`${API_BASE_URL}/grocery/subcategories/getall`);
           const subData = await subRes.json();
           if (subData.success) {
             setSubCategories(subData.subcategories);
@@ -103,7 +104,7 @@ const AddProduct = () => {
     formData.append('shopid', user?.profile?._id);
 
     try {
-      const response = await fetch('http://localhost:5510/grocery/addproduct', {
+      const response = await fetch(`${API_BASE_URL}/grocery/addproduct`, {
         method: 'POST',
         body: formData
       });

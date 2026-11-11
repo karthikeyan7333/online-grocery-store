@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, Clock, CheckCircle, ArrowLeft, Search, Truck } from 'lucide-react';
@@ -29,7 +30,7 @@ const Order = () => {
 
     const fetchOrders = async (userId) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/orders/${userId}`);
+            const res = await fetch(`${API_BASE_URL}/grocery/orders/${userId}`);
             const data = await res.json();
             if (data.success) {
                 setOrders(data.orders);
@@ -44,7 +45,7 @@ const Order = () => {
     const handleSubmitReview = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5510/grocery/product/review/add', {
+            const res = await fetch(`${API_BASE_URL}/grocery/product/review/add`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -72,7 +73,7 @@ const Order = () => {
     const handleSubmitDeliveryReview = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5510/grocery/delivery/rate', {
+            const res = await fetch(`${API_BASE_URL}/grocery/delivery/rate`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -168,7 +169,7 @@ const Order = () => {
                                             <div className="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0">
                                                 {item.productid?.productimage ? (
                                                     <img
-                                                        src={`http://localhost:5510/product/${item.productid.productimage}`}
+                                                        src={`${API_BASE_URL}/product/${item.productid.productimage}`}
                                                         alt={item.productid.productname}
                                                         className="w-full h-full object-cover"
                                                     />

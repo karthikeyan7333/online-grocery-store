@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Search, Menu, X, ChevronRight, ChevronLeft, Star, Clock, ShieldCheck, Truck, ArrowRight, Instagram, Facebook, Twitter, Sprout } from 'lucide-react';
@@ -63,42 +64,42 @@ const Home = () => {
         const fetchData = async () => {
             try {
                 // Fetch Categories
-                const catRes = await fetch('http://localhost:5510/grocery/categories/getall');
+                const catRes = await fetch(`${API_BASE_URL}/grocery/categories/getall`);
                 if (catRes.ok) {
                     const catData = await catRes.json();
                     if (catData.success) setCategories(catData.categories);
                 }
 
                 // Fetch Products
-                const prodRes = await fetch('http://localhost:5510/grocery/products/getall');
+                const prodRes = await fetch(`${API_BASE_URL}/grocery/products/getall`);
                 if (prodRes.ok) {
                     const prodData = await prodRes.json();
                     if (prodData.success) setProducts(prodData.products);
                 }
 
                 // Fetch Subcategories
-                const subRes = await fetch('http://localhost:5510/grocery/subcategories/getall');
+                const subRes = await fetch(`${API_BASE_URL}/grocery/subcategories/getall`);
                 if (subRes.ok) {
                     const subData = await subRes.json();
                     if (subData.success) setSubCategories(subData.subcategories);
                 }
 
                 // Fetch Shops
-                const shopRes = await fetch('http://localhost:5510/grocery/shops/getall');
+                const shopRes = await fetch(`${API_BASE_URL}/grocery/shops/getall`);
                 if (shopRes.ok) {
                     const shopData = await shopRes.json();
                     if (shopData.success) setShops(shopData.shops);
                 }
 
                 // Fetch Farmers
-                const farmerRes = await fetch('http://localhost:5510/grocery/admin/getfarmers');
+                const farmerRes = await fetch(`${API_BASE_URL}/grocery/admin/getfarmers`);
                 if (farmerRes.ok) {
                     const farmerData = await farmerRes.json();
                     if (farmerData.success) setFarmers(farmerData.farmers.filter(f => f.status === 'Approved'));
                 }
 
                 // Fetch Offers for Offers Section
-                const offerRes = await fetch('http://localhost:5510/grocery/homepage/offers');
+                const offerRes = await fetch(`${API_BASE_URL}/grocery/homepage/offers`);
                 if (offerRes.ok) {
                     const offerData = await offerRes.json();
                     if (offerData.success) {
@@ -152,7 +153,7 @@ const Home = () => {
 
     const fetchCartCount = async (userid) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/cart/get/${userid}`);
+            const res = await fetch(`${API_BASE_URL}/grocery/cart/get/${userid}`);
             const data = await res.json();
             if (data.success && data.cart) {
                 setCartCount(data.cart.products.length);
@@ -168,7 +169,7 @@ const Home = () => {
             return;
         }
         try {
-            const res = await fetch('http://localhost:5510/grocery/cart/add', {
+            const res = await fetch(`${API_BASE_URL}/grocery/cart/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userid: user.id || user._id, productid: productId, quantity: 1 })
@@ -404,7 +405,7 @@ const Home = () => {
                                             {offer.discount}
                                         </div>
                                         <img
-                                            src={`http://localhost:5510/offer/${offer.offerImage}`}
+                                            src={`${API_BASE_URL}/offer/${offer.offerImage}`}
                                             alt={offer.title}
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
@@ -516,7 +517,7 @@ const Home = () => {
                         >
                             <div className="w-20 h-20 mb-4 rounded-full bg-green-50 flex items-center justify-center overflow-hidden">
                                 {cat.categoryimage ? (
-                                    <img src={`http://localhost:5510/category/${cat.categoryimage}`} alt={cat.categoryname} className="w-full h-full object-cover" />
+                                    <img src={`${API_BASE_URL}/category/${cat.categoryimage}`} alt={cat.categoryname} className="w-full h-full object-cover" />
                                 ) : (
                                     <span className="text-2xl">🏬</span>
                                 )}
@@ -548,7 +549,7 @@ const Home = () => {
                         >
                             <div className="w-24 h-24 rounded-full bg-white border-2 border-green-50 p-1 shadow-lg group-hover:border-green-500 transition-all overflow-hidden">
                                 {sub.subcategoryimage ? (
-                                    <img src={`http://localhost:5510/subcategory/${sub.subcategoryimage}`} alt={sub.subcategoryname} className="w-full h-full object-cover rounded-full" />
+                                    <img src={`${API_BASE_URL}/subcategory/${sub.subcategoryimage}`} alt={sub.subcategoryname} className="w-full h-full object-cover rounded-full" />
                                 ) : (
                                     <div className="w-full h-full bg-gray-100 flex items-center justify-center rounded-full">
                                         <span className="text-2xl text-gray-400">📦</span>
@@ -584,7 +585,7 @@ const Home = () => {
                                     {product.stockStatus}
                                 </span>
                                 <img
-                                    src={`http://localhost:5510/product/${product.productimage}`}
+                                    src={`${API_BASE_URL}/product/${product.productimage}`}
                                     alt={product.productname}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
@@ -747,7 +748,7 @@ const Home = () => {
                                             {product.stockStatus}
                                         </span>
                                         <img
-                                            src={`http://localhost:5510/product/${product.productimage}`}
+                                            src={`${API_BASE_URL}/product/${product.productimage}`}
                                             alt={product.productname}
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
@@ -910,7 +911,7 @@ const Home = () => {
                             {/* Left: Product Image */}
                             <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-12">
                                 <img
-                                    src={`http://localhost:5510/product/${selectedProduct.productimage}`}
+                                    src={`${API_BASE_URL}/product/${selectedProduct.productimage}`}
                                     alt={selectedProduct.productname}
                                     className="w-full h-auto object-contain rounded-3xl mix-blend-multiply"
                                 />

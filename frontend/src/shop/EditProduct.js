@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import {
     LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Plus, Search, Bell, Upload, Loader, Folder
@@ -28,7 +29,7 @@ const EditProduct = () => {
         productimage: null
     });
 
-    const [preview, setPreview] = useState(productToEdit?.productimage ? `http://localhost:5510/product/${productToEdit.productimage}` : null);
+    const [preview, setPreview] = useState(productToEdit?.productimage ? `${API_BASE_URL}/product/${productToEdit.productimage}` : null);
 
     useEffect(() => {
         if (!productToEdit) {
@@ -39,13 +40,13 @@ const EditProduct = () => {
 
         const fetchData = async () => {
             try {
-                const catRes = await fetch(`http://localhost:5510/grocery/categories/getall`);
+                const catRes = await fetch(`${API_BASE_URL}/grocery/categories/getall`);
                 const catData = await catRes.json();
                 if (catData.success) {
                     setCategories(catData.categories);
                 }
 
-                const subRes = await fetch(`http://localhost:5510/grocery/subcategories/getall`);
+                const subRes = await fetch(`${API_BASE_URL}/grocery/subcategories/getall`);
                 const subData = await subRes.json();
                 if (subData.success) {
                     setSubCategories(subData.subcategories);
@@ -109,7 +110,7 @@ const EditProduct = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5510/grocery/product/edit/${productToEdit._id}`, {
+            const response = await fetch(`${API_BASE_URL}/grocery/product/edit/${productToEdit._id}`, {
                 method: 'PUT',
                 body: formData
             });

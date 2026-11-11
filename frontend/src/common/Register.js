@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -144,7 +145,7 @@ const Register = () => {
     e.preventDefault();
     if (!validateForm(customerData, 'customer')) return;
     try {
-      const response = await fetch('http://localhost:5510/grocery/register/customer', {
+      const response = await fetch(`${API_BASE_URL}/grocery/register/customer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(customerData)
@@ -165,7 +166,7 @@ const Register = () => {
     e.preventDefault();
     if (!validateForm(shopData, 'shop')) return;
     try {
-      const response = await fetch('http://localhost:5510/grocery/register/shop', {
+      const response = await fetch(`${API_BASE_URL}/grocery/register/shop`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(shopData)
@@ -186,7 +187,7 @@ const Register = () => {
     e.preventDefault();
     if (!validateForm(deliveryData, 'delivery')) return;
     try {
-      const response = await fetch('http://localhost:5510/grocery/register/delivery', {
+      const response = await fetch(`${API_BASE_URL}/grocery/register/delivery`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(deliveryData)
@@ -207,7 +208,7 @@ const Register = () => {
     e.preventDefault();
     if (!validateForm(farmerData, 'farmer')) return;
     try {
-      const response = await fetch('http://localhost:5510/grocery/register/farmer', {
+      const response = await fetch(`${API_BASE_URL}/grocery/register/farmer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(farmerData)

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -82,7 +83,7 @@ const DeliveryDashboard = () => {
     const fetchOrders = async (deliveryBoyId) => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:5510/grocery/delivery/orders/${deliveryBoyId}`);
+            const response = await axios.get(`${API_BASE_URL}/grocery/delivery/orders/${deliveryBoyId}`);
             if (response.data.success) {
                 setOrders(response.data.orders);
             }
@@ -98,7 +99,7 @@ const DeliveryDashboard = () => {
 
     const fetchLeaves = async (deliveryBoyId) => {
         try {
-            const response = await axios.get(`http://localhost:5510/grocery/delivery/leave/${deliveryBoyId}`);
+            const response = await axios.get(`${API_BASE_URL}/grocery/delivery/leave/${deliveryBoyId}`);
             if (response.data.success) {
                 setLeaves(response.data.leaves);
             }
@@ -110,7 +111,7 @@ const DeliveryDashboard = () => {
     const handleApplyLeave = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5510/grocery/delivery/leave/apply', {
+            const response = await axios.post(`${API_BASE_URL}/grocery/delivery/leave/apply`, {
                 deliveryId: user.profile._id,
                 ...leaveForm
             });
@@ -134,7 +135,7 @@ const DeliveryDashboard = () => {
         }
 
         try {
-            const response = await axios.put('http://localhost:5510/grocery/delivery/updatestatus', {
+            const response = await axios.put(`${API_BASE_URL}/grocery/delivery/updatestatus`, {
                 orderId,
                 status
             });
@@ -155,7 +156,7 @@ const DeliveryDashboard = () => {
         }
 
         try {
-            const response = await axios.put('http://localhost:5510/grocery/delivery/updatestatus', {
+            const response = await axios.put(`${API_BASE_URL}/grocery/delivery/updatestatus`, {
                 orderId: currentVerifyOrderId,
                 status: 'Delivered',
                 otp: otpInput
@@ -175,7 +176,7 @@ const DeliveryDashboard = () => {
 
     const handleUpdateProfile = async () => {
         try {
-            const response = await axios.put('http://localhost:5510/grocery/delivery/updateprofile', {
+            const response = await axios.put(`${API_BASE_URL}/grocery/delivery/updateprofile`, {
                 deliveryid: user.profile._id,
                 ...editData
             });

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config/api";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -78,12 +79,12 @@ const ShopDashboard = () => {
                 setLoading(true);
                 try {
                     // Fetch Products
-                    const prodRes = await fetch(`http://localhost:5510/grocery/getproducts/${user.profile._id}`);
+                    const prodRes = await fetch(`${API_BASE_URL}/grocery/getproducts/${user.profile._id}`);
                     const prodData = await prodRes.json();
                     if (prodData.success) setProducts(prodData.products);
 
                     // Fetch Orders
-                    const orderRes = await fetch(`http://localhost:5510/grocery/shop/orders/${user.profile._id}`);
+                    const orderRes = await fetch(`${API_BASE_URL}/grocery/shop/orders/${user.profile._id}`);
                     const orderData = await orderRes.json();
                     if (orderData.success) setOrders(orderData.orders);
 
@@ -101,7 +102,7 @@ const ShopDashboard = () => {
     const fetchNotifications = async () => {
         if (!user?.profile?._id) return;
         try {
-            const res = await fetch(`http://localhost:5510/grocery/notifications/get?role=shop&id=${user.profile._id}`);
+            const res = await fetch(`${API_BASE_URL}/grocery/notifications/get?role=shop&id=${user.profile._id}`);
             const data = await res.json();
             if (data.success) {
                 setNotifications(data.notifications);
@@ -114,7 +115,7 @@ const ShopDashboard = () => {
 
     const handleMarkAsRead = async () => {
         try {
-            await fetch('http://localhost:5510/grocery/notifications/read', {
+            await fetch(`${API_BASE_URL}/grocery/notifications/read`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: 'all', role: 'shop', shopid: user.profile._id })
@@ -511,7 +512,7 @@ const ShopDashboard = () => {
                                         <div key={product._id} className="group border border-gray-100 rounded-[2rem] p-4 hover:shadow-2xl transition-all relative">
                                             <div className="aspect-square bg-gray-50 rounded-[1.5rem] mb-4 overflow-hidden flex items-center justify-center relative">
                                                 <img
-                                                    src={`http://localhost:5510/product/${product.productimage}`}
+                                                    src={`${API_BASE_URL}/product/${product.productimage}`}
                                                     alt={product.productname}
                                                     className="w-full h-full object-cover"
                                                 />
@@ -553,7 +554,7 @@ const ShopDashboard = () => {
                                                                 e.stopPropagation();
                                                                 if (window.confirm("Are you sure you want to delete this product?")) {
                                                                     try {
-                                                                        const res = await fetch(`http://localhost:5510/grocery/product/delete/${product._id}`, { method: 'DELETE' });
+                                                                        const res = await fetch(`${API_BASE_URL}/grocery/product/delete/${product._id}`, { method: 'DELETE' });
                                                                         const data = await res.json();
                                                                         if (data.success) {
                                                                             setProducts(products.filter(p => p._id !== product._id));
@@ -588,7 +589,7 @@ const ShopDashboard = () => {
                                                                     // Update Stock API
                                                                     const updateStock = async () => {
                                                                         try {
-                                                                            const res = await fetch(`http://localhost:5510/grocery/product/edit/${product._id}`, {
+                                                                            const res = await fetch(`${API_BASE_URL}/grocery/product/edit/${product._id}`, {
                                                                                 method: 'PUT',
                                                                                 headers: { 'Content-Type': 'application/json' },
                                                                                 body: JSON.stringify({ stockQuantity: qty })
@@ -619,7 +620,7 @@ const ShopDashboard = () => {
                                                             const newStatus = product.stockStatus === 'Available' ? 'Out of Stock' : 'Available';
                                                             const updateStatus = async () => {
                                                                 try {
-                                                                    const res = await fetch(`http://localhost:5510/grocery/updateproductstatus/${product._id}`, {
+                                                                    const res = await fetch(`${API_BASE_URL}/grocery/updateproductstatus/${product._id}`, {
                                                                         method: 'PUT',
                                                                         headers: { 'Content-Type': 'application/json' },
                                                                         body: JSON.stringify({ stockStatus: newStatus })
@@ -692,7 +693,7 @@ const ShopDashboard = () => {
                                                     <div key={idx} className="flex items-center gap-4">
                                                         <div className="w-12 h-12 bg-gray-50 rounded-xl overflow-hidden">
                                                             <img
-                                                                src={`http://localhost:5510/product/${item.image}`}
+                                                                src={`${API_BASE_URL}/product/${item.image}`}
                                                                 alt={item.productname}
                                                                 className="w-full h-full object-cover"
                                                             />
