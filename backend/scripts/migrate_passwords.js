@@ -1,39 +1,25 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const { loginModel } = require('../model/grocerymodel');
-require('dotenv').config(); // Defaults to .env in current working directory
+const bcrypt = require("bcryptjs");
+const initializeDatabase = require("../config/database");
+const { loginModel } = require("../model/grocerymodel");
 
-const migratePasswords = async () => {
-    try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/grocery');
-        console.log("Connected to MongoDB for migration...");
+async function migratePasswords() {
+    await initializeDatabase();
+    const users = await loginModel.find({});
+    let convertedCount = 0;
 
-        const users = await loginModel.find({});
-        console.log(`Found ${users.length} users to check.`);
-
-        let convertedCount = 0;
-
-        for (const user of users) {
-            // Simple check: simple bcrypt hashes start with $2a$ or $2b$ and are 60 chars long.
-            // If password doesn't look like a hash, we hash it.
-            if (!user.password.startsWith('$2') || user.password.length !== 60) {
-                const salt = await bcrypt.genSalt(10);
-                const hashedPassword = await bcrypt.hash(user.password, salt);
-
-                user.password = hashedPassword;
-                await user.save();
-                convertedCount++;
-                console.log(`Converted password for: ${user.email}`);
-            }
+    for (const user of users) {
+        if (typeof user.password !== "string" || !/^\$2[aby]\$/.test(user.password) || user.password.length !== 60) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(String(user.password || ""), salt);
+            await user.save();
+            convertedCount += 1;
         }
-
-        console.log(`Migration complete. Converted ${convertedCount} passwords.`);
-        process.exit(0);
-
-    } catch (error) {
-        console.error("Migration failed:", error);
-        process.exit(1);
     }
-};
 
-migratePasswords();
+    console.log(`Checked ${users.length} users. Converted ${convertedCount} plaintext passwords.`);
+}
+
+migratePasswords().catch((error) => {
+    console.error("Password migration failed:", error);
+    process.exitCode = 1;
+});

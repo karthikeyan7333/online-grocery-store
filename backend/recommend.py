@@ -4,8 +4,10 @@ import joblib
 import pandas as pd
 import os
 
-# Set paths to the trained models
-ML_DIR = r"d:\onlinegrocery\Grocery Product Recommendation System"
+# The trained model files live beside the backend in the recommendation
+# system directory. Resolve the location from this script so it works from
+# any checkout path or current working directory.
+ML_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Grocery Product Recommendation System"))
 SIMILARITY_PATH = os.path.join(ML_DIR, "item_similarity.pkl")
 ITEM_LIST_PATH = os.path.join(ML_DIR, "item_list.pkl")
 CONFIG_PATH = os.path.join(ML_DIR, "item_cf_config.pkl")

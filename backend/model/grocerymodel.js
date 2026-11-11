@@ -1,467 +1,156 @@
-const mongoose = require("mongoose");
+const { createModel } = require("./jsonModel");
 
-// Customer Schema
-const customerregSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, "Name is required"],
-        trim: true
-    },
-    address: {
-        type: String,
-        required: [true, "Address is required"]
-    },
-    phone: {
-        type: String,
-        required: [true, "Phone number is required"]
-    },
-    dob: {
-        type: Date,
-        required: [true, "Date of birth is required"]
-    },
-    age: {
-        type: Number,
-        required: true
-    },
-    role: {
-        type: String,
-        default: 'customer'
-    }
-}, { timestamps: true });
+// These JSON-backed models retain the existing model names and document shape
+// used by the controllers while persisting each collection under backend/data.
+const customerModel = createModel("customer", {
+    filename: "customers.json",
+    required: ["name", "address", "phone", "dob", "age"],
+    numberFields: ["age"],
+    trimFields: ["name"],
+    defaults: { role: "customer" },
+    timestamps: true,
+    dateFields: ["dob", "createdAt", "updatedAt"]
+});
 
-const customerModel = mongoose.model("customer", customerregSchema);
+const deliveryModel = createModel("delivery", {
+    filename: "deliveryPersonnel.json",
+    required: ["name", "address", "phone", "vehicleType", "vehicleNumber"],
+    trimFields: ["name"],
+    defaults: { role: "delivery", status: "Pending" },
+    enums: { status: ["Pending", "Approved", "Rejected"] },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-// Delivery Boy Schema
-const deliveryregSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, "Name is required"],
-        trim: true
-    },
-    address: {
-        type: String,
-        required: [true, "Address is required"]
-    },
-    phone: {
-        type: String,
-        required: [true, "Phone number is required"]
-    },
-    vehicleType: {
-        type: String,
-        required: [true, "Vehicle type is required"]
-    },
-    vehicleNumber: {
-        type: String,
-        required: [true, "Vehicle number is required"]
-    },
-    role: {
-        type: String,
-        default: 'delivery'
-    },
-    status: {
-        type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
-        default: 'Pending'
-    }
-}, { timestamps: true });
+const shopModel = createModel("shop", {
+    filename: "shops.json",
+    required: ["shopName", "ownerName", "phone"],
+    trimFields: ["shopName", "ownerName"],
+    defaults: { role: "shop", status: "Pending" },
+    enums: { status: ["Pending", "Approved", "Rejected"] },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-const deliveryModel = mongoose.model("delivery", deliveryregSchema);
+const farmerModel = createModel("farmer", {
+    filename: "farmers.json",
+    required: ["name", "address", "phone", "farmName"],
+    trimFields: ["name"],
+    defaults: { role: "farmer", status: "Pending" },
+    enums: { status: ["Pending", "Approved", "Rejected"] },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-// Shop Schema
-const shopregSchema = new mongoose.Schema({
-    shopName: {
-        type: String,
-        required: [true, "Shop name is required"],
-        trim: true
-    },
-    ownerName: {
-        type: String,
-        required: [true, "Owner name is required"],
-        trim: true
-    },
-    phone: {
-        type: String,
-        required: [true, "Phone number is required"]
-    },
-    role: {
-        type: String,
-        default: 'shop'
-    },
-    status: {
-        type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
-        default: 'Pending'
-    }
-}, { timestamps: true });
+const loginModel = createModel("login", {
+    filename: "users.json",
+    required: ["email", "password", "role", "regType"],
+    unique: ["email"],
+    enums: { role: ["customer", "shop", "admin", "delivery", "farmer"], regType: ["customer", "shop", "admin", "delivery", "farmer"] },
+    references: { regid: { refPath: "regType", aliases: { admin: "login" } } },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-const shopModel = mongoose.model("shop", shopregSchema);
+const categoryModel = createModel("category", {
+    filename: "categories.json",
+    required: ["categoryname", "categoryimage", "description"],
+    references: { shopid: "shop", productid: "product" },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-// Farmer Schema
-const farmerregSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, "Name is required"],
-        trim: true
-    },
-    address: {
-        type: String,
-        required: [true, "Address is required"]
-    },
-    phone: {
-        type: String,
-        required: [true, "Phone number is required"]
-    },
-    farmName: {
-        type: String,
-        required: [true, "Farm name is required"]
-    },
-    role: {
-        type: String,
-        default: 'farmer'
-    },
-    status: {
-        type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
-        default: 'Pending'
-    }
-}, { timestamps: true });
+const subcategoryModel = createModel("subcategory", {
+    filename: "subcategories.json",
+    required: ["subcategoryname", "categoryid"],
+    references: { categoryid: "category", shopid: "shop" },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-const farmerModel = mongoose.model("farmer", farmerregSchema);
+const productModel = createModel("product", {
+    filename: "products.json",
+    required: ["productname", "productimage", "description", "price", "stockQuantity", "categoryname"],
+    numberFields: ["price", "stockQuantity", "averageRating", "reviews.rating"],
+    defaults: { stockStatus: "Available", reviews: [], averageRating: 0 },
+    enums: { stockStatus: ["Available", "Out of Stock"] },
+    references: {
+        shopid: "shop",
+        farmerid: "farmer",
+        categoryid: "category",
+        subcategoryid: "subcategory",
+        "reviews.userid": "login"
+    },
+    subdocumentArrays: ["reviews"],
+    trimFields: ["productname"],
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-// Login Schema
-const loginSchema = new mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    regid: {
-        type: mongoose.Schema.Types.ObjectId,
-        refPath: "regType"
-    },
-    role: {
-        type: String,
-        enum: ['customer', 'shop', 'admin', 'delivery', 'farmer'],
-        required: true
-    },
-    regType: {
-        type: String,
-        required: true,
-        enum: ["customer", "shop", "admin", "delivery", "farmer"]
-    }
-}, { timestamps: true });
+const cartModel = createModel("cart", {
+    filename: "carts.json",
+    required: ["userid"],
+    defaults: { products: [] },
+    references: { userid: "login", "products.productid": "product" },
+    numberFields: ["products.quantity"],
+    subdocumentArrays: ["products"],
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-const loginModel = mongoose.model("login", loginSchema);
+const orderModel = createModel("order", {
+    filename: "orders.json",
+    required: ["userid", "items", "totalAmount"],
+    defaults: { status: "Pending", date: () => new Date(), deliveryBoyId: null, deliveryOTP: null },
+    enums: { status: ["Pending", "Paid", "Assigned", "Accepted", "Dispatched", "Delivered", "Cancelled"] },
+    references: { userid: "login", "items.productid": "product", deliveryBoyId: "delivery" },
+    numberFields: ["totalAmount", "items.quantity", "items.price", "deliveryReview.rating"],
+    subdocumentArrays: ["items"],
+    timestamps: true,
+    dateFields: ["date", "createdAt", "updatedAt"]
+});
 
-const addcategorySchema = new mongoose.Schema({
-    categoryname: {
-        type: String,
-        required: true
-    },
-    categoryimage: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    shopid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'shop'
-    },
-    productid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'product'
-    }
-}, { timestamps: true })
-const categoryModel = mongoose.model("category", addcategorySchema)
+const offerModel = createModel("offer", {
+    filename: "offers.json",
+    required: ["title", "description", "discount", "offerImage"],
+    defaults: { productid: null, categoryid: null, subcategoryid: null, isGlobal: false, status: "Active" },
+    booleanFields: ["isGlobal"],
+    trimFields: ["title"],
+    enums: { status: ["Active", "Inactive"] },
+    references: { productid: "product", categoryid: "category", subcategoryid: "subcategory" },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-const addsubcategorySchema = new mongoose.Schema({
-    subcategoryname: {
-        type: String,
-        required: true
-    },
-    categoryid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'category',
-        required: true
-    },
-    shopid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'shop'
-    },
-    subcategoryimage: {
-        type: String
-    }
-}, { timestamps: true })
-const subcategoryModel = mongoose.model("subcategory", addsubcategorySchema)
+const paymentModel = createModel("payment", {
+    filename: "payments.json",
+    required: ["paymentId", "amount"],
+    numberFields: ["amount"],
+    defaults: { currency: "INR", status: "pending" },
+    references: { orderId: "order" },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-const addproductSchema = new mongoose.Schema({
-    productname: {
-        type: String,
-        required: true
-    },
-    productimage: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    shopid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'shop'
-    },
-    farmerid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'farmer'
-    },
-    categoryid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'category'
-    },
-    subcategoryid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subcategory'
-    },
-    subcategoryname: {
-        type: String
-    },
-    price: {
-        type: Number,
-        required: true
-    },
-    stockQuantity: {
-        type: Number,
-        required: true
-    },
+const notificationModel = createModel("notification", {
+    filename: "notifications.json",
+    required: ["recipientRole", "message"],
+    defaults: { recipientId: null, type: "info", read: false },
+    booleanFields: ["read"],
+    references: { recipientId: "shop" },
+    timestamps: true,
+    dateFields: ["createdAt", "updatedAt"]
+});
 
-    stockStatus: {
-        type: String,
-        enum: ["Available", "Out of Stock"],
-        default: "Available"
-    },
-    categoryname: {
-        type: String,
-        required: true
-    },
-    reviews: [{
-        userid: { type: mongoose.Schema.Types.ObjectId, ref: 'login' },
-        rating: { type: Number, required: true },
-        comment: { type: String },
-        createdAt: { type: Date, default: Date.now }
-    }],
-    averageRating: { type: Number, default: 0 }
-}, { timestamps: true })
-const productModel = mongoose.model("product", addproductSchema)
-
-// Cart Schema
-const cartSchema = new mongoose.Schema({
-    userid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'login', // Referring to the Login user ID usually, or customer ID. Let's use Login ID for consistency with User object in frontend
-        required: true
-    },
-    products: [{
-        productid: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'product'
-        },
-        quantity: {
-            type: Number,
-            default: 1
-        }
-    }]
-}, { timestamps: true });
-const cartModel = mongoose.model("cart", cartSchema);
-
-// Order Schema
-const orderSchema = new mongoose.Schema({
-    userid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'login',
-        required: true
-    },
-    items: [{
-        productid: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'product'
-        },
-        quantity: {
-            type: Number,
-            required: true
-        },
-        price: {
-            type: Number, // Price at the time of order
-            required: true
-        }
-    }],
-    totalAmount: {
-        type: Number,
-        required: true
-    },
-    status: {
-        type: String,
-        default: 'Pending',
-        enum: ['Pending', 'Paid', 'Assigned', 'Accepted', 'Dispatched', 'Delivered', 'Cancelled']
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    paymentDetails: {
-        id: String,
-        status: String,
-        payer: Object
-    },
-    deliveryBoyId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'delivery',
-        default: null
-    },
-    deliveryReview: {
-        rating: Number,
-        review: String
-    },
-    deliveryOTP: {
-        type: String,
-        default: null
-    }
-}, { timestamps: true });
-const orderModel = mongoose.model("order", orderSchema);
-
-// Offer Schema
-const offerSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    discount: {
-        type: String, // e.g. "50% OFF"
-        required: true
-    },
-    offerImage: {
-        type: String,
-        required: true
-    },
-    productid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'product',
-        default: null
-    },
-    categoryid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'category',
-        default: null
-    },
-    subcategoryid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subcategory',
-        default: null
-    },
-    isGlobal: {
-        type: Boolean,
-        default: false
-    },
-    status: {
-        type: String,
-        enum: ['Active', 'Inactive'],
-        default: 'Active'
-    }
-}, { timestamps: true });
-const offerModel = mongoose.model("offer", offerSchema);
-
-const paymentSchema = new mongoose.Schema({
-    orderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'order'
-    },
-    paymentId: {
-        type: String,
-        required: true
-    },
-    currency: {
-        type: String,
-        default: 'INR'
-    },
-    amount: {
-        type: Number,
-        required: true
-    },
-    signature: {
-        type: String
-    },
-    status: {
-        type: String,
-        default: 'pending'
-    }
-}, { timestamps: true });
-const paymentModel = mongoose.model("payment", paymentSchema);
-
-// Notification Schema
-const notificationSchema = new mongoose.Schema({
-    recipientRole: {
-        type: String, // 'admin', 'shop'
-        required: true
-    },
-    recipientId: {
-        type: mongoose.Schema.Types.ObjectId, // For shop (shopid), null for admin
-        ref: 'shop',
-        default: null
-    },
-    message: {
-        type: String,
-        required: true
-    },
-    type: {
-        type: String, // 'alert', 'info', 'success', 'warning'
-        default: 'info'
-    },
-    read: {
-        type: Boolean,
-        default: false
-    }
-}, { timestamps: true });
-const notificationModel = mongoose.model("notification", notificationSchema);
-
-// Leave Schema
-const leaveSchema = new mongoose.Schema({
-    deliveryId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'delivery',
-        required: true
-    },
-    startDate: {
-        type: Date,
-        required: true
-    },
-    endDate: {
-        type: Date,
-        required: true
-    },
-    reason: {
-        type: String,
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
-        default: 'Pending'
-    }
-}, { timestamps: true });
-
-const leaveModel = mongoose.model("leave", leaveSchema);
+const leaveModel = createModel("leave", {
+    filename: "leaves.json",
+    required: ["deliveryId", "startDate", "endDate", "reason"],
+    defaults: { status: "Pending" },
+    enums: { status: ["Pending", "Approved", "Rejected"] },
+    references: { deliveryId: "delivery" },
+    timestamps: true,
+    dateFields: ["startDate", "endDate", "createdAt", "updatedAt"]
+});
 
 module.exports = {
     customerModel,

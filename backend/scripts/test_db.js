@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
+const fs = require("fs");
+const initializeDatabase = require("../config/database");
+const { dataDirectory } = require("../model/jsonDatabase");
 
-console.log("Attempting connection...");
-mongoose.connect('mongodb://127.0.0.1:27017/grocery')
+initializeDatabase()
     .then(() => {
-        console.log("Connection SUCCESS!");
-        process.exit(0);
+        const files = fs.readdirSync(dataDirectory).filter((name) => name.endsWith(".json"));
+        console.log(`JSON storage ready at ${dataDirectory} (${files.length} files).`);
     })
-    .catch(err => {
-        console.error("Connection FAILED:", err.message);
-        process.exit(1);
+    .catch((error) => {
+        console.error("JSON storage check failed:", error.message);
+        process.exitCode = 1;
     });

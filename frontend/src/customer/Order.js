@@ -44,8 +44,8 @@ const Order = () => {
     const handleSubmitReview = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5510/grocery/product/review', {
-                method: 'POST',
+            const res = await fetch('http://localhost:5510/grocery/product/review/add', {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userid: user.id || user._id,
@@ -72,8 +72,8 @@ const Order = () => {
     const handleSubmitDeliveryReview = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5510/grocery/order/ratedelivery', {
-                method: 'POST',
+            const res = await fetch('http://localhost:5510/grocery/delivery/rate', {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     orderId: selectedOrder._id,

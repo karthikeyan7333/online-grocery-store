@@ -212,8 +212,8 @@ const AdminDashboard = () => {
 
     const handleAssignDelivery = async (deliveryBoyId) => {
         try {
-            const res = await fetch(`http://localhost:5510/grocery/delivery/assign`, {
-                method: 'POST',
+            const res = await fetch(`http://localhost:5510/grocery/admin/assigndelivery`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ orderId: selectedOrder._id, deliveryBoyId })
             });

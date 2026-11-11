@@ -1,11 +1,11 @@
 const { customerModel, shopModel, loginModel, categoryModel, subcategoryModel, productModel, cartModel, orderModel, offerModel, paymentModel, deliveryModel, farmerModel, notificationModel, leaveModel } = require("../model/grocerymodel");
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const nodemailer = require('nodemailer');
 
 const path = require('path');
+const fs = require('fs');
 const { spawn } = require('child_process');
 const { Mistral } = require("@mistralai/mistralai");
 
@@ -418,7 +418,7 @@ exports.chatBot = async (req, res) => {
         const token = req.headers.authorization?.split(" ")[1];
         if (token) {
             try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET || 'groceryappsecretkey123');
+                const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey123');
                 const userId = decoded.id;
 
                 // Fetch latest order
@@ -1644,7 +1644,15 @@ exports.getRecommendation = async (req, res) => {
         const { productname } = req.params;
         console.log("Getting recommendations for:", productname);
 
-        const pythonProcess = spawn('python', [
+        const recommendationSystemPath = path.resolve(__dirname, '../../Grocery Product Recommendation System');
+        const virtualEnvPython = path.join(
+            recommendationSystemPath,
+            '.venv',
+            process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'
+        );
+        const pythonExecutable = process.env.PYTHON_EXECUTABLE ||
+            (fs.existsSync(virtualEnvPython) ? virtualEnvPython : 'python');
+        const pythonProcess = spawn(pythonExecutable, [
             path.join(__dirname, '../recommend.py'),
             productname
         ]);

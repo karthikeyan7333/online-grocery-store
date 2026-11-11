@@ -1,14 +1,29 @@
-# Backend
-backend/node_modules/
-backend/.env
+# Dependencies and local Python environments
+**/node_modules/
+**/.venv/
+**/venv/
+**/env/
 
-# Frontend
-frontend/node_modules/
-frontend/.env
+# Local secrets
+**/.env
+**/.env.*
+!**/.env.example
+**/*credentials*.json
+**/*service-account*.json
+**/*secrets*.json
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
 
-# Python
-__pycache__/
-*.pyc
+# Local JSON database records and temporary atomic-write files
+backend/data/*.json
+backend/data/*.tmp
+
+# Python cache files
+**/__pycache__/
+*.py[cod]
+*$py.class
 
 # Logs
 *.log
